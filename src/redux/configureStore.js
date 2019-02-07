@@ -1,16 +1,19 @@
-import { createStore, combineReducers } from 'redux';
-import { createForms } from 'react-redux-form'; 
-import { USERS } from '../shared/users';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createForms } from 'react-redux-form';
+import { Login } from './login';
 import { InitialUserLogin } from './forms';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
 
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
-            users: USERS,
+            login: Login,
             ...createForms({
-                userLogin: InitialUserLogin
+                userLoginForm: InitialUserLogin
             })
-        })
+        }),
+        applyMiddleware(thunk, logger)
     );
 
     return store;
