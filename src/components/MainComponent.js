@@ -2,13 +2,12 @@ import React, {Component} from 'react';
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {authenticateUser} from '../redux/ActionCreators';
 import Login from "./LoginComponent";
+import Home from "./HomeComponent";
 import {connect} from "react-redux";
 
 const mapStateToProps = state => {
   return {
-    loginSuccessfull: state.loginSuccessfull,
-    processingAuthentication: state.processingAuthentication,
-    loginFailed: state.loginFailed
+    login: state.login
   }
 }
 
@@ -26,16 +25,22 @@ class Main extends Component {
       const LoginPage = () => {
         return (
           <Login 
-            processingAuthentication={this.props.processingAuthentication} 
-            loginFailed={this.props.loginFailed}
-            loginSuccessfull={this.props.loginSuccessfull}
+            processingAuthentication={this.props.login.processingAuthentication} 
+            loginFailed={this.props.login.loginFailed}
             authenticate={this.props.authenticateUser} />
         );
       }  
 
+      const HomePage = () => {
+        return (
+          <Home loggedUser={this.props.login.loggedUser} />
+        );
+      }
+
       return (
         <Switch>
           <Route path="/login" component={LoginPage} />
+          <Route path="/home" component={HomePage} />
           <Redirect to="/login" />
         </Switch>
       );

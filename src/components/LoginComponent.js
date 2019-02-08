@@ -10,32 +10,33 @@ import { Loading } from './LoadingComponent';
 
 const required = (val) => val && val.length;
 
-function RenderLoading({processingAuthentication, loginFailed}){
-  if(processingAuthentication){
-    return(
-      <Loading />
-    );
-  }
-  else if (loginFailed) {
-    return(
-      <h4>{loginFailed}</h4>
-    );
-  }
-  else {
-    return this.props.history.push("/");
-  }
-}
-
 class Login extends Component {
 
   constructor(props){
     super(props);
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLoader = this.handleLoader.bind(this);
   }
 
-  handleSubmit = (values) => {
-    <RenderLoading processingAuthentication={this.props.processingAuthentication} loginFailed={this.props.loginFailed} />
+  handleLoader() {
+    if(this.props.processingAuthentication){
+      return(
+        <Loading />
+      );
+    }
+    else if (this.props.loginFailed) {
+      return(
+        <h4>{this.props.loginFailed}</h4>
+      );
+    }
+    else {
+      return this.props.history.push("/home");
+    }
+  }
+
+  handleSubmit(values) {
+    this.handleLoader();
     this.props.authenticate(values);
   }
 
