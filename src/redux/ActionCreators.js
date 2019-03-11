@@ -36,12 +36,45 @@ export const successfullyFetchedUsers = (users) => ({
 */
 
 
+// Create user
+export const createUser = (userInformation) => (dispatch => {
+    dispatch(loading(true));
+
+    return fetch(baseUrl + 'createUser', {
+        method: 'POST',
+        body: JSON.stringify(userInformation),
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(user => {
+        dispatch(userCreated(user.createdUser));
+        dispatch(loading(false));
+    })
+    .catch(errmess => {
+        dispatch(failedToCreateUser(errmess));
+        dispatch(loading(false));
+    });
+});
+
+
+export const userCreated = (user) => ({
+    type: ActionTypes.USER_CREATED,
+    payload: user
+});
+
+export const failedToCreateUser = (errmess) => ({
+    type: ActionTypes.FAILED_TO_CREATE_USER,
+    payload: errmess
+});
+
 // Authenticate user
-
 export const authenticateUser = (userCredentials) => (dispatch) => {
-    dispatch(processingAuthentication(true));
+    dispatch(loading(true));
 
-    return fetch(baseUrl + 'users', {
+    return fetch(baseUrl + 'authenticateUser', {
         method: 'POST',
         body: JSON.stringify(userCredentials),
         headers: {
@@ -50,8 +83,14 @@ export const authenticateUser = (userCredentials) => (dispatch) => {
         credentials: 'same-origin'
     })
     .then(response => response.json())
-    .then(user => dispatch(loginSuccessfull(user)))
-    .catch(errmess => dispatch(loginFailed(errmess)))
+    .then(user => {
+        dispatch(loginSuccessfull(user));
+        dispatch(loading(false));
+    })
+    .catch(errmess => {
+        dispatch(loginFailed(errmess));
+        dispatch(loading(false));
+    })
 }
 
 export const loginSuccessfull = (user) => ({
@@ -64,7 +103,14 @@ export const loginFailed = (errmess) => ({
     payload: errmess
 });
 
-export const processingAuthentication = () => ({
-    type: ActionTypes.PROCESSING_AUTHENTICATION
+export const logoutUser = () => ({
+    type:ActionTypes.LOGOUT
+});
+
+
+// UTIL
+export const loading = (isActive) => ({
+    type: ActionTypes.LOADING,
+    payload: isActive
 });
 

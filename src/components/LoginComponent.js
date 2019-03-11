@@ -6,41 +6,30 @@ import {
 } from 'reactstrap';
 import '../login.css';
 import { Control, Form, Errors } from 'react-redux-form';
-import { Loading } from './LoadingComponent';
+import { Redirect } from 'react-router';
 
 const required = (val) => val && val.length;
 
 class Login extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleLoader = this.handleLoader.bind(this);
-  }
-
-  handleLoader() {
-    if(this.props.processingAuthentication){
-      return(
-        <Loading />
-      );
-    }
-    else if (this.props.loginFailed) {
-      return(
-        <h4>{this.props.loginFailed}</h4>
-      );
-    }
-    else {
-      return this.props.history.push("/home");
-    }
   }
 
   handleSubmit(values) {
-    this.handleLoader();
     this.props.authenticate(values);
   }
 
   render() {
+    console.log(this.props.loginSuccessfull.length);
+    console.log(this.props.loginSuccessfull);
+
+    if(this.props.loginSuccessfull.length !== 0) {
+      return <Redirect to="/home" />
+    }
+
     return (
       <Container>
         <Row>
