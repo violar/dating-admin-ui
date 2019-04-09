@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { Loading } from './loading';
 
+
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
@@ -20,8 +21,6 @@ export const ConfigureStore = () => {
         }),
         applyMiddleware(thunk, logger)
     );
-
-    
 
     return store;
 }

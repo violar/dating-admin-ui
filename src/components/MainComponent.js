@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { authenticateUser, logoutUser, createUser } from '../redux/ActionCreators';
 import Login from "./LoginComponent";
-import Home from "./HomeComponent";
 import { connect } from "react-redux";
 import { Loading } from './LoadingComponent';
+import { Navigation } from './NavComponent';
+import { User } from './HomeComponent';
 import Signup from './SignupComponent';
 
 
 const mapStateToProps = state => {
   console.log("inside main mapStateToProps");
+  console.log({login: state.login.loginFailed});
   return {
     login: state.login,
     signup: state.signup,
@@ -19,7 +21,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   authenticateUser: (credentials) => { dispatch(authenticateUser(credentials)) },
-  logoutUser: () => { dispatch(logoutUser()) },
   createUser: (userInformation) => { dispatch(createUser(userInformation)) }
 });
 
@@ -31,27 +32,24 @@ class Main extends Component {
 
   render() {
     console.log("inside main render");
+    console.log(this.props.login.user);
       const LoginPage = () => {
-        console.log("inside main login");
         return (
           <Login 
             loginFailed={this.props.login.loginFailed}
-            authenticate={this.props.authenticateUser}
-            loginSuccessfull={this.props.login.loggedUser} />
+            authenticate={this.props.authenticateUser} />
         );
       }  
 
-      const HomePage = () => {
-        console.log("inside main homepage");
-        console.log(this.props.login.loggedUser);
+      const UserPage = () => {
         return (
-          <Home loggedUser={this.props.login.loggedUser} logoutUser={this.props.logoutUser} />
+          <User />
         );
       }
 
       const SignupPage = () => {
         console.log("inside signup page")
-        console.log(this.props.signup.userCreated._id);
+        console.log(this.props.signup.userCreated._id + "this is my new usercreated");
         return (
           <Signup createUser={this.props.createUser} 
             userCreated={this.props.signup.userCreated._id} />
@@ -60,14 +58,13 @@ class Main extends Component {
 
       return (
         <div>
-          NAVBAR
+          <Navigation token={this.props.login.user} />
           <Loading isActive={this.props.loading.loader} />
           <Switch>
             <Route path="/signup" component={SignupPage} />
-            <Route path="/home" component={HomePage} />
             <Route path="/login" component={LoginPage} />
-            
-            <Redirect to="/signup" />
+            <Route path="/home" component={UserPage} />
+            <Redirect to="/login" />
           </Switch>
         </div>
       );

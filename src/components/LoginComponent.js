@@ -7,6 +7,7 @@ import {
 import '../login.css';
 import { Control, Form, Errors } from 'react-redux-form';
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const required = (val) => val && val.length;
 
@@ -22,11 +23,14 @@ class Login extends Component {
     this.props.authenticate(values);
   }
 
-  render() {
-    console.log(this.props.loginSuccessfull.length);
-    console.log(this.props.loginSuccessfull);
+  createAccount() {
+    this.props.history.push("/signup")
+  }
 
-    if(this.props.loginSuccessfull.length !== 0) {
+  render() {
+    const localStorageToken = localStorage.getItem('token');
+
+    if(localStorageToken) {
       return <Redirect to="/home" />
     }
 
@@ -66,7 +70,8 @@ class Login extends Component {
                       }} />
                 </FormGroup>
               </Col>
-              <Button type="submit" color="primary">Submit</Button>
+              <Button type="submit" color="primary">Login</Button>
+              <Link to="/signup" style={{ marginLeft: 10 }}>Create an Account</Link>
             </Form>
           </Col>
         </Row>

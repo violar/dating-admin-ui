@@ -15,6 +15,7 @@ class Signup extends Component {
     }
 
     handleSubmit(val) {
+        console.log("these are my form valuesssss" + val);
         this.props.createUser(val);
     }
 
@@ -33,7 +34,7 @@ class Signup extends Component {
                 <Row>
                     <Col className="login" sm="12" md={{ size: 6, offset: 3 }}>
                         <h4>Sign Up</h4>
-                        <Form model="userSignupForm" className="form" onSubmit={(values => this.handleSubmit(values))}>
+                        <Form model="signupUser" className="form" onSubmit={(values => this.handleSubmit(values))}>
                             <Col>
                                 <FormGroup>
                                     <Label htmlFor="name">Name</Label>

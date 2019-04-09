@@ -39,6 +39,7 @@ export const successfullyFetchedUsers = (users) => ({
 // Create user
 export const createUser = (userInformation) => (dispatch => {
     dispatch(loading(true));
+    console.log(userInformation + 'hhhhhhhhhhhhooooowwddddyyyyy');
 
     return fetch(baseUrl + 'createUser', {
         method: 'POST',
@@ -59,7 +60,6 @@ export const createUser = (userInformation) => (dispatch => {
     });
 });
 
-
 export const userCreated = (user) => ({
     type: ActionTypes.USER_CREATED,
     payload: user
@@ -69,6 +69,8 @@ export const failedToCreateUser = (errmess) => ({
     type: ActionTypes.FAILED_TO_CREATE_USER,
     payload: errmess
 });
+
+
 
 // Authenticate user
 export const authenticateUser = (userCredentials) => (dispatch) => {
@@ -83,28 +85,26 @@ export const authenticateUser = (userCredentials) => (dispatch) => {
         credentials: 'same-origin'
     })
     .then(response => response.json())
-    .then(user => {
-        dispatch(loginSuccessfull(user));
+    .then(x => {
+        localStorage.setItem('token', JSON.stringify(x.token));
+
+        dispatch(loginSuccessfull(JSON.stringify(x.token)));
         dispatch(loading(false));
     })
     .catch(errmess => {
         dispatch(loginFailed(errmess));
         dispatch(loading(false));
-    })
+    });
 }
 
-export const loginSuccessfull = (user) => ({
+export const loginSuccessfull = (token) => ({
     type: ActionTypes.LOGIN_SUCCESSFULL,
-    payload: user
+    payload: token
 });
 
 export const loginFailed = (errmess) => ({
     type: ActionTypes.LOGIN_FAILED,
     payload: errmess
-});
-
-export const logoutUser = () => ({
-    type:ActionTypes.LOGOUT
 });
 
 
