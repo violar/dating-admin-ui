@@ -1,5 +1,6 @@
 .login {
-    border: 1px solid grey;
+    border: 1px solid rgb(216, 215, 215);
     margin: 20px;
     padding: 20px;
+    background: rgba(255, 255, 255, 0.7); /* Black see-through */
 }

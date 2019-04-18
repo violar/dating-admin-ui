@@ -1,27 +1,33 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
-import { authenticateUser, logoutUser, createUser } from '../redux/ActionCreators';
+import { authenticateUser, logoutUser, createUser, joinReport } from '../redux/ActionCreators';
 import Login from "./LoginComponent";
 import { connect } from "react-redux";
 import { Loading } from './LoadingComponent';
 import { Navigation } from './NavComponent';
-import { User } from './HomeComponent';
+import { Home } from './HomeComponent';
+import { Reports } from './ReportsComponent';
 import Signup from './SignupComponent';
 
 
 const mapStateToProps = state => {
   console.log("inside main mapStateToProps");
-  console.log({login: state.login.loginFailed});
+
+  const userToken = JSON.parse(localStorage.getItem('token'));
+    
   return {
     login: state.login,
     signup: state.signup,
-    loading: state.loading
+    loading: state.loading,
+    joinReport: state.joinReport,
+    token: userToken
   }
 }
 
 const mapDispatchToProps = dispatch => ({
   authenticateUser: (credentials) => { dispatch(authenticateUser(credentials)) },
-  createUser: (userInformation) => { dispatch(createUser(userInformation)) }
+  createUser: (userInformation) => { dispatch(createUser(userInformation)) },
+  getJoinReport: (startDate, endDate, groupBy) => { dispatch(joinReport(startDate, endDate, groupBy)) }
 });
 
 class Main extends Component {
@@ -30,7 +36,7 @@ class Main extends Component {
     super(props);
   }
 
-  render() {
+  render = () => {
     console.log("inside main render");
     console.log(this.props.login.user);
       const LoginPage = () => {
@@ -41,9 +47,16 @@ class Main extends Component {
         );
       }  
 
-      const UserPage = () => {
+      const HomePage = () => {
         return (
-          <User />
+          <Home />
+        );
+      }
+
+      const ReportsPage = () => {
+        return (
+          <Reports joinReport={this.props.getJoinReport} token={this.props.token}
+            data={this.props.joinReport[0]} />
         );
       }
 
@@ -58,12 +71,13 @@ class Main extends Component {
 
       return (
         <div>
-          <Navigation token={this.props.login.user} />
+          <Navigation token={this.props.token} />
           <Loading isActive={this.props.loading.loader} />
           <Switch>
             <Route path="/signup" component={SignupPage} />
             <Route path="/login" component={LoginPage} />
-            <Route path="/home" component={UserPage} />
+            <Route path="/home" component={HomePage} />
+            <Route path="/reports" component={ReportsPage} />
             <Redirect to="/login" />
           </Switch>
         </div>

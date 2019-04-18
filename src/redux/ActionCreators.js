@@ -70,7 +70,35 @@ export const failedToCreateUser = (errmess) => ({
     payload: errmess
 });
 
+// Join Report
+export const joinReport = (startDate, endDate, groupBy, token) => (dispatch) => {
 
+    let bearer = 'Bearer' + token;
+
+    return fetch(baseUrl + 'joinReport', {
+        method: 'GET',
+        withCredentials: true,
+        credentials: 'include',
+        body: JSON.stringify(startDate, endDate, groupBy),
+        headers: {
+            'Authorization': bearer,
+            'Content-Type' : 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(result => dispatch(receivedJoinReport(result)))
+    .catch(err => dispatch(failedToReceiveJoinReport(err)));
+}
+
+export const receivedJoinReport = (report) => ({
+    type: ActionTypes.RECEIVED_JOIN_REPORT,
+    payload: report
+})
+
+export const failedToReceiveJoinReport = (errmess) => ({
+    type: ActionTypes.FAILED_TO_RECEIVE_JOIN_REPORT,
+    payload: errmess
+})
 
 // Authenticate user
 export const authenticateUser = (userCredentials) => (dispatch) => {
@@ -88,7 +116,7 @@ export const authenticateUser = (userCredentials) => (dispatch) => {
     .then(x => {
         localStorage.setItem('token', JSON.stringify(x.token));
 
-        dispatch(loginSuccessfull(JSON.stringify(x.token)));
+        dispatch(loginSuccessfull());
         dispatch(loading(false));
     })
     .catch(errmess => {
@@ -97,10 +125,9 @@ export const authenticateUser = (userCredentials) => (dispatch) => {
     });
 }
 
-export const loginSuccessfull = (token) => ({
-    type: ActionTypes.LOGIN_SUCCESSFULL,
-    payload: token
-});
+export const loginSuccessfull = () => ({
+    type: ActionTypes.LOGIN_SUCCESSFULL
+})
 
 export const loginFailed = (errmess) => ({
     type: ActionTypes.LOGIN_FAILED,

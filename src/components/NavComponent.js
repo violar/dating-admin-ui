@@ -11,9 +11,14 @@ const ToggleLogout = (props) => {
     if(props.token) {
         console.log("token exists");
         return (
-            <NavItem>
-                <NavLink href="/login" onClick={handleLogout}>Logout</NavLink>
-            </NavItem>
+            <Nav className="ml-auto">
+                <NavItem>
+                    <NavLink href="/login" onClick={handleLogout}>Logout</NavLink>
+                </NavItem>
+                <NavItem>
+                    <NavLink href="https://github.com/reactstrap/reactstrap">Reports</NavLink>
+                </NavItem>
+            </Nav>
         )
     }
     else {
@@ -29,13 +34,7 @@ export const Navigation = (props) => {
         <div className="navbar-text">
             <Navbar className="bg-dark shadow fixed-top">
                 <NavbarBrand>Schmucks Admin</NavbarBrand>
-                    <Nav className="ml-auto">
-                        <ToggleLogout token={props.token} />
-                        <NavItem>
-                            <NavLink href="https://github.com/reactstrap/reactstrap">Reports</NavLink>
-                        </NavItem>
-                    </Nav>
-               
+                <ToggleLogout token={props.token} />
             </Navbar>
         </div>
     )

@@ -1,21 +1,18 @@
 import * as ActionTypes from './ActionTypes';
 
 export const Login = (state = {
-    loginFailed: null,
-    user: null
+    loginFailed: null
 }, action) => {
     switch(action.type) {
         case ActionTypes.LOGIN_SUCCESSFULL:
             return {
                 ...state,
-                loginFailed: null,
-                user: action.payload
+                loginFailed: null
             }
         case ActionTypes.LOGIN_FAILED:
             return {
                 ...state,
-                loginFailed: action.payload,
-                user: null
+                loginFailed: action.payload
             }
         default:
             return state;
