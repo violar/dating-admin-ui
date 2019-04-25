@@ -40,29 +40,51 @@ const renderTooltipContent = (o) => {
 };
 
 const JoinReport = (props) => {
-    props.joinReport(props.startDate, props.endDate, props.groupBy, props.token);
 
-    /*
-    const monthJoinReport = [
-        {monthJoinReport: 'Jan', Incomplete: 4000, Complete: 2400}
-    ];*/
+    let dataResult = [];
     
-    const dayJoinReport = [
-        props.data.forEach(d => (
-            {dayJoinReport: d[0].getDate(), Incomplete: d[2], Complete: d[3]}
-        ))
-    ];
+    for(let value in props.data.result) {
+        dataResult.push(props.data.result[value]);
+    }
+    
+    if(dataResult.length > 0 && props.data.group === "dayJoin") {      
+        const dayJoinReport = [];
 
-    return (
-        <AreaChart width={600} height={400} data={props.groupBy} stackOffset="expand"
-        margin={{top: 10, right: 30, left: 0, bottom: 0}} >
-            <XAxis dataKey={prop.groupBy}/>
-            <YAxis tickFormatter={toPercent}/>
-            <Tooltip content={renderTooltipContent}/>
-            <Area type='monotone' dataKey='Incomplete' stackId="1" stroke='#8884d8' fill='#8884d8' />
-            <Area type='monotone' dataKey='Complete' stackId="1" stroke='#82ca9d' fill='#82ca9d' />
-        </AreaChart>
-    );
+        for(let i=0; i<dataResult.length; i+=1){
+            dayJoinReport.push({day: dataResult[i].CreatedDate.slice(0,10), Incomplete: dataResult[i].Incomplete, Complete: dataResult[i].Complete})
+        }
+
+        return (
+            <AreaChart width={600} height={400} data={dayJoinReport} stackOffset="expand"
+            margin={{top: 10, right: 30, left: 0, bottom: 0}} >
+                <XAxis dataKey="day"/>
+                <YAxis tickFormatter={toPercent}/>
+                <Tooltip content={renderTooltipContent}/>
+                <Area type='monotone' dataKey='Incomplete' stackId="1" stroke='#8884d8' fill='#8884d8' />
+                <Area type='monotone' dataKey='Complete' stackId="1" stroke='#82ca9d' fill='#82ca9d' />
+            </AreaChart>
+        );
+
+    } else if(dataResult.length > 0 && props.data.group === "monthJoin") {
+        const monthJoinReport = [];
+
+        for(let i=0; i<dataResult.length; i+=1){
+            monthJoinReport.push({month: dataResult[i].CreatedDate, Incomplete: dataResult[i].Incomplete, Complete: dataResult[i].Complete})
+        }
+
+        return (
+            <AreaChart width={600} height={400} data={monthJoinReport} stackOffset="expand"
+            margin={{top: 10, right: 30, left: 0, bottom: 0}} >
+                <XAxis dataKey="month"/>
+                <YAxis tickFormatter={toPercent}/>
+                <Tooltip content={renderTooltipContent}/>
+                <Area type='monotone' dataKey='Incomplete' stackId="1" stroke='#8884d8' fill='#8884d8' />
+                <Area type='monotone' dataKey='Complete' stackId="1" stroke='#82ca9d' fill='#82ca9d' />
+            </AreaChart>
+        ); 
+    } else {
+        return (<div></div>)
+    }
 }
 
 export class Reports extends Component {
@@ -73,12 +95,15 @@ export class Reports extends Component {
             startDate: new Date(),
             endDate: new Date(),
             dropdownOpen: false,
-            groupBy: "dayJoinReport"
+            groupBy: ''
         }
 
         this.toggleDayMonth = this.toggleDayMonth.bind(this);
         this.datePickerStartDate = this.datePickerStartDate.bind(this);
         this.datePickerEndDate = this.datePickerEndDate.bind(this);
+        this.getJoinReport = this.getJoinReport.bind(this);
+        this.onGroupChangeDay = this.onGroupChangeDay.bind(this);
+        this.onGroupChangeMonth = this.onGroupChangeMonth.bind(this);
     }
 
     toggleDayMonth() {
@@ -99,7 +124,24 @@ export class Reports extends Component {
         });
     }
 
+    getJoinReport() {
+        this.props.joinReport(this.state.startDate.toISOString().slice(0,10), this.state.endDate.toISOString().slice(0,10), this.state.groupBy, this.props.token);
+    }
+
+    onGroupChangeDay() {
+        this.setState({
+            groupBy: 'joinDay'
+        }, () => this.getJoinReport()); 
+    }
+
+    onGroupChangeMonth() {
+        this.setState({
+            groupBy: 'joinMonth'
+        }, () => this.getJoinReport());
+    }
+    
     render() {
+        console.log("inside report component");
         return (
             <Container>
                 <Row>
@@ -113,10 +155,8 @@ export class Reports extends Component {
                                             <Col>
                                                 <ListGroup flush>
                                                 <ListGroupItem disabled tag="a" href="#">Join Completion</ListGroupItem>
-                                                <ListGroupItem tag="a" href="#">Dapibus ac facilisis in</ListGroupItem>
-                                                <ListGroupItem tag="a" href="#">Morbi leo risus</ListGroupItem>
-                                                <ListGroupItem tag="a" href="#">Porta ac consectetur ac</ListGroupItem>
-                                                <ListGroupItem tag="a" href="#">Vestibulum at eros</ListGroupItem>
+                                                <ListGroupItem tag="a" href="#">Inappropriate Image Removal</ListGroupItem>
+                                                <ListGroupItem tag="a" href="#">Banned Members</ListGroupItem>
                                                 </ListGroup>
                                             </Col>
                                         </Row>
@@ -126,12 +166,7 @@ export class Reports extends Component {
                                             <Col>
                                                 <Row>
                                                     <Col>
-                                                        <JoinReport joinReport={this.props.joinReport} 
-                                                            token={this.props.token} 
-                                                            startDate={this.state.startDate} 
-                                                            endDate={this.state.endDate} 
-                                                            groupBy={this.state.groupBy} 
-                                                            data={this.props.data}/>
+                                                        <JoinReport data={this.props.data} group={this.state.groupBy}/>
                                                     </Col>
                                                 </Row>
                                                 <Row className="d-flex align-items-end">
@@ -164,8 +199,8 @@ export class Reports extends Component {
                                                         <Dropdown isOpen={this.state.dropdownOpen} size="sm" toggle={this.toggleDayMonth}>
                                                             <DropdownToggle caret>Search By</DropdownToggle>
                                                             <DropdownMenu>
-                                                                <DropdownItem onClick={() => this.setState({groupBy: 'dayJoinReport'})}>Day</DropdownItem>
-                                                                <DropdownItem onClick={() => this.setState({groupBy: 'monthJoinReport'})}>Month</DropdownItem>
+                                                                <DropdownItem onClick={this.onGroupChangeDay}>Day</DropdownItem>
+                                                                <DropdownItem onClick={this.onGroupChangeMonth}>Month</DropdownItem>
                                                             </DropdownMenu>
                                                         </Dropdown>
                                                     </Col>

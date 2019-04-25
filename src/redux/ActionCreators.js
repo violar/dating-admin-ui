@@ -72,22 +72,31 @@ export const failedToCreateUser = (errmess) => ({
 
 // Join Report
 export const joinReport = (startDate, endDate, groupBy, token) => (dispatch) => {
+    dispatch(loading(true));
 
-    let bearer = 'Bearer' + token;
-
+    let tok = 'Bearer ' + token;
     return fetch(baseUrl + 'joinReport', {
-        method: 'GET',
-        withCredentials: true,
-        credentials: 'include',
-        body: JSON.stringify(startDate, endDate, groupBy),
+        method: 'POST',
+        body: JSON.stringify({
+            startDate,
+            endDate,
+            groupBy
+        }),
         headers: {
-            'Authorization': bearer,
+            'Authorization': tok,
             'Content-Type' : 'application/json'
-        }
+        },
+        credentials: 'same-origin'
     })
     .then(response => response.json())
-    .then(result => dispatch(receivedJoinReport(result)))
-    .catch(err => dispatch(failedToReceiveJoinReport(err)));
+    .then(result => {
+        dispatch(receivedJoinReport(result));
+        dispatch(loading(false));
+    })
+    .catch(err => {
+        dispatch(failedToReceiveJoinReport(err));
+        dispatch(loading(false));
+    });
 }
 
 export const receivedJoinReport = (report) => ({

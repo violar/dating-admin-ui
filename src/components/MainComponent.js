@@ -27,7 +27,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   authenticateUser: (credentials) => { dispatch(authenticateUser(credentials)) },
   createUser: (userInformation) => { dispatch(createUser(userInformation)) },
-  getJoinReport: (startDate, endDate, groupBy) => { dispatch(joinReport(startDate, endDate, groupBy)) }
+  getJoinReport: (startDate, endDate, groupBy, token) => { dispatch(joinReport(startDate, endDate, groupBy, token)) }
 });
 
 class Main extends Component {
@@ -54,9 +54,10 @@ class Main extends Component {
       }
 
       const ReportsPage = () => {
+        //console.log("YOOOOOOOOOHOOO " + JSON.stringify(this.props.joinReport.report));
         return (
           <Reports joinReport={this.props.getJoinReport} token={this.props.token}
-            data={this.props.joinReport[0]} />
+            data={this.props.joinReport.report} />
         );
       }
 
