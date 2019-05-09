@@ -11,7 +11,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const getPercent = (value, total) => {
 	const ratio = total > 0 ? value / total : 0;
-  
     return toPercent(ratio, 2);
 };
 
@@ -141,7 +140,6 @@ export class Reports extends Component {
     }
     
     render() {
-        console.log("inside report component");
         return (
             <Container>
                 <Row>

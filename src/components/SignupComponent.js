@@ -4,37 +4,19 @@ import { Form, Control, Errors } from 'react-redux-form';
 import { Redirect } from 'react-router-dom';
 import '../login.css';
 
-const required = (val) => val && val.length;
+const required = val => val && val.length;
 
-class Signup extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.handleSubmit = this.handleSubmit.bind(this);
+export const Signup = (props) => {
+    if(props.userCreated) {
+      return <Redirect to="/login" />
     }
 
-    handleSubmit(val) {
-        console.log("these are my form valuesssss" + val);
-        this.props.createUser(val);
-    }
-
-    render() {
-        console.log("inside signup render");
-        console.log("YOOLLLOOOOO" + this.props.userCreated);
-
-        if (this.props.userCreated) {
-            console.log("inside signup userCreated");
-            return <Redirect to="/home" />
-        }
-        
-        console.log("inside signup else form part");
-        return (
-            <Container>
+    return (
+        <Container>
                 <Row>
                     <Col className="login" sm="12" md={{ size: 6, offset: 3 }}>
                         <h4>Sign Up</h4>
-                        <Form model="signupUser" className="form" onSubmit={(values => this.handleSubmit(values))}>
+                        <Form model="signupUser" className="form" onSubmit={(values => props.createUser(values))}>
                             <Col>
                                 <FormGroup>
                                     <Label htmlFor="name">Name</Label>
@@ -82,8 +64,5 @@ class Signup extends Component {
                     </Col>
                 </Row>
             </Container>
-        );
-    }
+    )
 }
-
-export default Signup;

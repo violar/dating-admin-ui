@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { authenticateUser, logoutUser, createUser, joinReport } from '../redux/ActionCreators';
-import Login from "./LoginComponent";
+import { Login } from "./LoginComponent";
 import { connect } from "react-redux";
 import { Loading } from './LoadingComponent';
 import { Navigation } from './NavComponent';
 import { Home } from './HomeComponent';
 import { Reports } from './ReportsComponent';
-import Signup from './SignupComponent';
+import { Signup } from './SignupComponent';
 
 
 const mapStateToProps = state => {
-  console.log("inside main mapStateToProps");
-
   const userToken = JSON.parse(localStorage.getItem('token'));
     
   return {
@@ -37,8 +35,6 @@ class Main extends Component {
   }
 
   render = () => {
-    console.log("inside main render");
-    console.log(this.props.login.user);
       const LoginPage = () => {
         return (
           <Login 
@@ -54,7 +50,6 @@ class Main extends Component {
       }
 
       const ReportsPage = () => {
-        //console.log("YOOOOOOOOOHOOO " + JSON.stringify(this.props.joinReport.report));
         return (
           <Reports joinReport={this.props.getJoinReport} token={this.props.token}
             data={this.props.joinReport.report} />
@@ -62,11 +57,10 @@ class Main extends Component {
       }
 
       const SignupPage = () => {
-        console.log("inside signup page")
-        console.log(this.props.signup.userCreated._id + "this is my new usercreated");
         return (
           <Signup createUser={this.props.createUser} 
-            userCreated={this.props.signup.userCreated._id} />
+            userCreated={this.props.signup.userCreated._id}
+            userToken={this.props.token} />
         );
       }
 

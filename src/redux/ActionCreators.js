@@ -1,45 +1,10 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 
-// Get all users
-/*export const fetchUsers = () => (dispatch) => {
-    dispatch(loading(true));
-
-    return fetch(baseUrl + 'users')
-        .then(
-            response => {
-                if (response.ok) {
-                    return response;
-                }
-                // error: problem with the response iteself
-                else {
-                    let error = new Error(`Error ${response.status} : ${response.statusText}`);
-                    error.message = response;
-                    throw error;
-                }
-            },
-            // error: server not responding
-            error => {
-                let error = new Error(error.message);
-                throw error;   
-            }
-        )
-        .then(response => response.json())
-        .then(users => dispatch(successfullyFetchedUsers(users)))
-        .catch(errmess => dispatch(failedToFetchUsers(errmess)));
-}
-
-export const successfullyFetchedUsers = (users) => ({
-    type: ActionTypes.SUCCESSFULLY_FETCHED_USERS,
-    payload: users
-});
-*/
-
 
 // Create user
 export const createUser = (userInformation) => (dispatch => {
     dispatch(loading(true));
-    console.log(userInformation + 'hhhhhhhhhhhhooooowwddddyyyyy');
 
     return fetch(baseUrl + 'createUser', {
         method: 'POST',
